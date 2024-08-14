@@ -1,15 +1,22 @@
 import { Router } from 'express';
 import QuizController from '../controllers/quizController.js';
-import { protect } from '../middlewares/protectMiddleware.js';
+import ProtectMiddlewares from '../middlewares/protectMiddlewares.js';
+// import questionRouter from './questionRoutes.js';
 
 const router = Router();
 
-const quiz = new QuizController();
+const { getAllQuizzes, getQuizById, createQuiz, updateQuiz, deleteQuiz } =
+  new QuizController();
+const { protect, restrictTo } = new ProtectMiddlewares();
 
-const { getAllQuizzes, getQuizById, createQuiz } = quiz;
+// router.use('/:quizId/question', questionRouter);
 
 router.use(protect);
-router.route('/').get(getAllQuizzes).post(createQuiz);
-router.route('/:id').get(getQuizById);
+router.route('/').get(getAllQuizzes).post(restrictTo('teacher'), createQuiz);
+router
+  .route('/:id')
+  .get(getQuizById)
+  .patch(restrictTo('teacher', 'admin'), updateQuiz)
+  .delete(restrictTo('admin', 'teacher'), deleteQuiz);
 
 export default router;

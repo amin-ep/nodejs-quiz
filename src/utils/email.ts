@@ -19,7 +19,6 @@ export default async function emailService(options: EmailOptions) {
       pass: SMTP_PASSWORD,
     },
   });
-  console.log(SMTP_HOST, SMTP_PORT);
 
   await transporter.sendMail({
     from: 'Quizer <info@aminebadi.ir>',

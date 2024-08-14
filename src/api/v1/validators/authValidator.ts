@@ -22,10 +22,14 @@ const schema = z
       .max(14, {
         message: 'Password cannot contain more than 14 characters',
       }),
-    role: z.enum(['admin', 'teacher', 'student'], {
-      message: 'The user role must be admin, teacher or student',
-      invalid_type_error: 'The user role must be a string',
-    }),
+    role: z
+      .enum(['admin', 'teacher', 'student'], {
+        message: 'The user role must be admin, teacher or student',
+        invalid_type_error: 'The user role must be a string',
+      })
+      .refine(val => val !== 'admin', {
+        message: 'A user must be a teacher or student',
+      }),
     verified: z
       .boolean()
       .default(false)
@@ -42,6 +46,7 @@ export const signupValidator = schema
     fullName: true,
     email: true,
     password: true,
+    role: true,
   })
   .required();
 

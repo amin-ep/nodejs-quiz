@@ -33,5 +33,11 @@ const schema = z
 
 export const createQuizValidator = schema.pick({
   title: true,
+  description: true,
   teacherID: true,
+});
+
+export const updateQuizValidator = schema.pick({
+  title: true,
+  description: true,
 });
