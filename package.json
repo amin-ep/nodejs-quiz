@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "start": "tsc && nodemon dist/server.js",
-    "prod": "tsc && NODE_ENV=production && dist/server.js",
+    "prod": "tsc && NODE_ENV=production nodemon dist/server.js",
     "watch": "tsc -w",
     "build": "tsc"
   },

@@ -11,10 +11,6 @@ const questionSchema = new Schema(
       ref: 'Quiz',
       type: Schema.Types.ObjectId,
     },
-    // questionType: {
-    //   type: String,
-    //   enum: ['true or false', 'choice', 'describe'],
-    // },
   },
   {
     timestamps: true,

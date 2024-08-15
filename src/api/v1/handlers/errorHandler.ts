@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { Request, Response, NextFunction } from 'express';
 import HttpError from '../../../utils/httpError.js';
 
@@ -25,12 +27,17 @@ const productionError = (err: HttpError, res: Response) => {
   }
 };
 
+const handleCastError = (err: HttpError) => {
+  //@ts-ignore
+  const message = `Invalid Id: ${err.value}`;
+  return new HttpError(message, 404);
+};
+
 export default function (
   err: HttpError,
-  req: Request,
+  _req: Request,
   res: Response,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  next: NextFunction
+  _next: NextFunction
 ) {
   err.status = err.status || 'error';
   err.statusCode = err.statusCode || 500;
@@ -38,6 +45,7 @@ export default function (
   if ((process.env.NODE_ENV as string) === 'development') {
     developmentError(err, res);
   } else {
+    if (err.name === 'CastError') err = handleCastError(err);
     productionError(err, res);
   }
 }
