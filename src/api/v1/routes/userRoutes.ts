@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import UserController from '../controllers/userController.js';
-import ProtectMiddlewares from '../middlewares/protectMiddlewares';
+import ProtectMiddlewares from '../middlewares/protectMiddlewares.js';
 
 const router = Router();
 

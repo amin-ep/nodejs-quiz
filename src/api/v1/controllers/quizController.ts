@@ -38,7 +38,6 @@ class QuizController {
 
   createQuiz = catchAsync(
     async (req: IRequest, res: Response, next: NextFunction) => {
-      if (!req.body.teacherId) req.body.teacherId = req.user?.id;
       try {
         createQuizValidator.parse(req.body);
       } catch (err) {
@@ -91,6 +90,18 @@ class QuizController {
     res.status(204).json({
       status: 'success',
       data: null,
+    });
+  });
+
+  getMyQuizzes = catchAsync(async (req: IRequest, res: Response) => {
+    const quizzes = await Quiz.find({ teacherId: req.user?.id });
+
+    res.status(200).json({
+      status: 'success',
+      result: quizzes.length,
+      data: {
+        quizzes,
+      },
     });
   });
 }

@@ -2,6 +2,7 @@ import { Router } from 'express';
 import QuestionController from '../controllers/questionController.js';
 import ProtectMiddlewares from '../middlewares/protectMiddlewares.js';
 import checkID from '../middlewares/checkIdMiddleware.js';
+import { addOwnerMiddleware } from '../middlewares/addOwnerMiddleware.js';
 const router = Router();
 
 const {
@@ -18,7 +19,7 @@ router.use(protect);
 router.param('id', checkID);
 router
   .route('/')
-  .post(restrictTo('teacher'), createQuestion)
+  .post(restrictTo('teacher'), addOwnerMiddleware, createQuestion)
   .get(restrictTo('admin'), getAllQuestions);
 
 router

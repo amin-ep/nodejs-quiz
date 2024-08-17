@@ -2,19 +2,26 @@ import { Router } from 'express';
 import QuizController from '../controllers/quizController.js';
 import ProtectMiddlewares from '../middlewares/protectMiddlewares.js';
 import checkID from '../middlewares/checkIdMiddleware.js';
-// import questionRouter from './questionRoutes.js';
-
+import { addOwnerMiddleware } from '../middlewares/addOwnerMiddleware.js';
 const router = Router();
 
-const { getAllQuizzes, getQuizById, createQuiz, updateQuiz, deleteQuiz } =
-  new QuizController();
+const {
+  getAllQuizzes,
+  getQuizById,
+  createQuiz,
+  updateQuiz,
+  deleteQuiz,
+  getMyQuizzes,
+} = new QuizController();
 const { protect, restrictTo } = new ProtectMiddlewares();
 
-// router.use('/:quizId/question', questionRouter);
-
-router.param('id', checkID);
 router.use(protect);
-router.route('/').get(getAllQuizzes).post(restrictTo('teacher'), createQuiz);
+router.get('/myQuizzes', restrictTo('teacher'), getMyQuizzes);
+router.param('id', checkID);
+router
+  .route('/')
+  .get(getAllQuizzes)
+  .post(restrictTo('teacher'), addOwnerMiddleware, createQuiz);
 router
   .route('/:id')
   .get(getQuizById)

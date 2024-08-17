@@ -24,9 +24,9 @@ const schema = z
         message: 'A Description must be 100 characters or less',
       })
       .optional(),
-    teacherId: z.string({
-      required_error: 'A quiz must have a teacher ID',
-      invalid_type_error: 'Teacher id must be a string value',
+    owner: z.string({
+      required_error: 'A quiz must have a owner ID',
+      invalid_type_error: 'Owner id must be a string value',
     }),
   })
   .strict();
@@ -34,7 +34,7 @@ const schema = z
 export const createQuizValidator = schema.pick({
   title: true,
   description: true,
-  teacherId: true,
+  owner: true,
 });
 
 export const updateQuizValidator = z.object({

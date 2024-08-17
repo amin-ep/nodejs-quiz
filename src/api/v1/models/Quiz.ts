@@ -4,7 +4,7 @@ const quizSchema = new Schema(
   {
     title: String,
     description: String,
-    teacherId: {
+    owner: {
       ref: 'User',
       type: Schema.Types.ObjectId,
     },

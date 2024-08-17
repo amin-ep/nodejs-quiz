@@ -28,6 +28,10 @@ export const createQuestionValidator = z
     quiz: z.string({
       required_error: 'A question must belong to a quiz',
     }),
+    owner: z.string({
+      required_error: 'A question must have a owner ID',
+      invalid_type_error: 'Owner id must be a string value',
+    }),
   })
   .strict()
   .refine(
