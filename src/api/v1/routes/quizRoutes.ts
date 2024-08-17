@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import QuizController from '../controllers/quizController.js';
 import ProtectMiddlewares from '../middlewares/protectMiddlewares.js';
+import checkID from '../middlewares/checkIdMiddleware.js';
 // import questionRouter from './questionRoutes.js';
 
 const router = Router();
@@ -11,6 +12,7 @@ const { protect, restrictTo } = new ProtectMiddlewares();
 
 // router.use('/:quizId/question', questionRouter);
 
+router.param('id', checkID);
 router.use(protect);
 router.route('/').get(getAllQuizzes).post(restrictTo('teacher'), createQuiz);
 router

@@ -18,6 +18,7 @@ class QuizController {
 
     res.status(200).json({
       status: 'success',
+      result: quiz.length,
       data: {
         quiz,
       },
@@ -37,7 +38,7 @@ class QuizController {
 
   createQuiz = catchAsync(
     async (req: IRequest, res: Response, next: NextFunction) => {
-      if (!req.body.teacherID) req.body.teacherID = req.user?.id;
+      if (!req.body.teacherId) req.body.teacherId = req.user?.id;
       try {
         createQuizValidator.parse(req.body);
       } catch (err) {
@@ -66,6 +67,21 @@ class QuizController {
           return next(new HttpError(err.errors[0].message, 400));
         }
       }
+
+      const updatedQuiz = await Quiz.findByIdAndUpdate(
+        req.params.id,
+        req.body,
+        {
+          new: true,
+        }
+      );
+
+      res.status(200).json({
+        status: 'success',
+        data: {
+          updatedQuiz,
+        },
+      });
     }
   );
 
