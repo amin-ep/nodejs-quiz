@@ -1,6 +1,7 @@
 import mongoose, { Schema } from 'mongoose';
+import { IQuiz } from '../interfaces/IQuiz';
 
-const quizSchema = new Schema(
+const quizSchema = new Schema<IQuiz>(
   {
     title: String,
     description: String,
@@ -22,4 +23,4 @@ quizSchema.virtual('questions', {
   foreignField: 'quiz',
 });
 
-export default mongoose.model('Quiz', quizSchema);
+export default mongoose.model<IQuiz>('Quiz', quizSchema);

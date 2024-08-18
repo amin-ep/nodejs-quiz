@@ -3,14 +3,19 @@ import QuestionController from '../controllers/questionController.js';
 import ProtectMiddlewares from '../middlewares/protectMiddlewares.js';
 import checkID from '../middlewares/checkIdMiddleware.js';
 import { addOwnerMiddleware } from '../middlewares/addOwnerMiddleware.js';
+import validationMiddleware from '../middlewares/validationMiddleware.js';
+import {
+  createQuestionValidator,
+  updateQuestionValidator,
+} from '../validators/questionValidator.js';
 const router = Router();
 
 const {
-  createQuestion,
-  getAllQuestions,
-  getQuestionById,
-  updateQuestion,
-  deleteQuestion,
+  getAllDocuments,
+  createDocument,
+  deleteDocument,
+  getDocumentById,
+  updateDocument,
 } = new QuestionController();
 
 const { protect, restrictTo } = new ProtectMiddlewares();
@@ -19,13 +24,22 @@ router.use(protect);
 router.param('id', checkID);
 router
   .route('/')
-  .post(restrictTo('teacher'), addOwnerMiddleware, createQuestion)
-  .get(restrictTo('admin'), getAllQuestions);
+  .post(
+    restrictTo('teacher'),
+    addOwnerMiddleware,
+    validationMiddleware(createQuestionValidator),
+    createDocument
+  )
+  .get(restrictTo('admin'), getAllDocuments);
 
 router
   .route('/:id')
-  .get(getQuestionById)
-  .delete(restrictTo('admin', 'teacher'), deleteQuestion)
-  .patch(restrictTo('admin', 'teacher'), updateQuestion);
+  .get(getDocumentById)
+  .delete(restrictTo('admin', 'teacher'), deleteDocument)
+  .patch(
+    restrictTo('admin', 'teacher'),
+    validationMiddleware(updateQuestionValidator),
+    updateDocument
+  );
 
 export default router;

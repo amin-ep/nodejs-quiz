@@ -1,6 +1,6 @@
 import mongoose, { Schema } from 'mongoose';
-
-const questionSchema = new Schema(
+import { IQuestion } from '../interfaces/IQuestion.js';
+const questionSchema = new Schema<IQuestion>(
   {
     title: String,
     options: [String],
@@ -21,4 +21,4 @@ const questionSchema = new Schema(
   }
 );
 
-export default mongoose.model('Question', questionSchema);
+export default mongoose.model<IQuestion>('Question', questionSchema);

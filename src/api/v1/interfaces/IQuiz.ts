@@ -1,12 +1,7 @@
-import { Document } from 'mongoose';
-
-interface Grade {
-  student: object;
-  grade: number;
-}
+import { Document, Types } from 'mongoose';
 
 export interface IQuiz extends Document {
   title: string;
-  grades: Grade[];
-  gradePer: number;
+  description?: string | undefined;
+  owner: Types.ObjectId;
 }
