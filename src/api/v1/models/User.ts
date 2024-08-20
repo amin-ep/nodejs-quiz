@@ -41,6 +41,11 @@ userSchema.pre('save', async function (next) {
   next();
 });
 
+// userSchema.pre('findOneAndUpdate', async function (next) {
+//   this.findOneAndUpdate({ _id: {$ne: } })
+//   next();
+// });
+
 userSchema.methods.generateVerificationCode = function () {
   this.verificationCode = uuid();
   return this.verificationCode;

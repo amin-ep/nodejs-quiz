@@ -50,6 +50,13 @@ class ProtectMiddlewares {
       next();
     };
   }
+
+  public protectCurrentUser(req: IRequest, res: Response, next: NextFunction) {
+    if (req?.user?.id === req.params.id) {
+      return next(new HttpError('You cannot delete your account', 403));
+    }
+    next();
+  }
 }
 
 export default ProtectMiddlewares;
