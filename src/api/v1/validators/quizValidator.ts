@@ -28,6 +28,15 @@ const schema = z
       required_error: 'A quiz must have a owner ID',
       invalid_type_error: 'Owner id must be a string value',
     }),
+    grade: z
+      .number({
+        invalid_type_error: 'a grade must be a number value',
+        required_error: 'A quiz must have a grade',
+      })
+      .max(100, {
+        message: 'You cannot set more than 100 grade for a quiz',
+      })
+      .int(),
   })
   .strict();
 
@@ -35,6 +44,7 @@ export const createQuizValidator = schema.pick({
   title: true,
   description: true,
   owner: true,
+  grade: true,
 });
 
 export const updateQuizValidator = z.object({
@@ -59,5 +69,15 @@ export const updateQuizValidator = z.object({
     .max(100, {
       message: 'A Description must be 100 characters or less',
     })
+    .optional(),
+  grade: z
+    .number({
+      invalid_type_error: 'a grade must be a number value',
+      required_error: 'A quiz must have a grade',
+    })
+    .max(100, {
+      message: 'You cannot set more than 100 grade for a quiz',
+    })
+    .int()
     .optional(),
 });

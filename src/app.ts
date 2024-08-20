@@ -5,7 +5,7 @@ import authRouterV1 from './api/v1/routes/authRoutes.js';
 import quizRouterV1 from './api/v1/routes/quizRoutes.js';
 import questionRouterV1 from './api/v1/routes/questionRoutes.js';
 import userRouterV1 from './api/v1/routes/userRoutes.js';
-
+import submissionRouterV1 from './api/v1/routes/submissionRoutes.js';
 const app: Express = express();
 
 app.use(express.json());
@@ -17,6 +17,7 @@ app.use('/api/v1/auth', authRouterV1);
 app.use('/api/v1/quiz', quizRouterV1);
 app.use('/api/v1/question', questionRouterV1);
 app.use('/api/v1/users', userRouterV1);
+app.use('/api/v1/submission', submissionRouterV1);
 
 app.all('*', function (req, res, next) {
   return next(

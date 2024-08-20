@@ -27,6 +27,7 @@ const schema = z
         message: 'The user role must be admin, teacher or student',
         invalid_type_error: 'The user role must be a string',
       })
+      .default('student')
       .refine(val => val !== 'admin', {
         message: 'A user must be a teacher or student',
       }),

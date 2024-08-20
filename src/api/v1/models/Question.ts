@@ -15,6 +15,7 @@ const questionSchema = new Schema<IQuestion>(
       ref: 'User',
       type: Schema.Types.ObjectId,
     },
+    point: Number,
   },
   {
     timestamps: true,

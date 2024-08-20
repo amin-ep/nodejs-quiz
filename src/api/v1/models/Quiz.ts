@@ -9,6 +9,7 @@ const quizSchema = new Schema<IQuiz>(
       ref: 'User',
       type: Schema.Types.ObjectId,
     },
+    grade: Number,
   },
   {
     timestamps: true,

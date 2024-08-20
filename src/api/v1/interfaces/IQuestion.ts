@@ -5,4 +5,5 @@ export interface IQuestion extends Document {
   correctOptionIndex: number;
   quiz: Types.ObjectId;
   owner: Types.ObjectId;
+  point: Types.ObjectId;
 }

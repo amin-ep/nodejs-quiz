@@ -32,6 +32,11 @@ export const createQuestionValidator = z
       required_error: 'A question must have a owner ID',
       invalid_type_error: 'Owner id must be a string value',
     }),
+    point: z.number({
+      invalid_type_error: 'Point must be a number value',
+      required_error:
+        'every questions must have a point of a quiz. Please provide a valid point for this question',
+    }),
   })
   .strict()
   .refine(
@@ -69,6 +74,9 @@ export const updateQuestionValidator = z
       })
       .int()
       .nonnegative()
+      .optional(),
+    point: z
+      .number({ invalid_type_error: 'Point must be a number value' })
       .optional(),
   })
   .strict()
