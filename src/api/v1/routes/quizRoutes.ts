@@ -8,7 +8,12 @@ import {
   createQuizValidator,
   updateQuizValidator,
 } from '../validators/quizValidator.js';
+import questionRouter from './questionRoutes.js';
+import addQuizId from '../middlewares/addQuizIdMiddleware.js';
+
 const router = Router();
+// Nested routes
+router.use('/:quizId/question', addQuizId, questionRouter);
 
 const {
   getAllDocuments,

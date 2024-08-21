@@ -7,7 +7,7 @@ import HttpError from '../../../utils/httpError.js';
 export default class Factory<T extends Document> {
   constructor(protected Model: MongooseModel<T>) {}
 
-  getAllDocuments = catchAsync(async (req: IRequest, res: Response) => {
+  getAllDocuments = catchAsync(async (_req: IRequest, res: Response) => {
     const docs = await this.Model.find();
 
     res.status(200).json({
@@ -20,13 +20,6 @@ export default class Factory<T extends Document> {
   });
 
   createDocument = catchAsync(async (req: IRequest, res: Response) => {
-    //   try {
-    //     this.createValidation.parse(req.body);
-    //   } catch (err) {
-    //     if (err instanceof ZodError) {
-    //       return next(new HttpError(err.errors[0].message, 400));
-    //     }
-    //   }
     const newDocument = await this.Model.create(req.body);
 
     res.status(201).json({

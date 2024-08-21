@@ -8,6 +8,7 @@ import {
   createQuestionValidator,
   updateQuestionValidator,
 } from '../validators/questionValidator.js';
+import addQuizId from '../middlewares/addQuizIdMiddleware.js';
 const router = Router();
 
 const {
@@ -26,11 +27,12 @@ router
   .route('/')
   .post(
     restrictTo('teacher'),
+    addQuizId,
     addOwnerMiddleware,
     validationMiddleware(createQuestionValidator),
     createDocument
   )
-  .get(restrictTo('admin'), getAllDocuments);
+  .get(getAllDocuments);
 
 router
   .route('/:id')
