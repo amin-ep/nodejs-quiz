@@ -9,7 +9,8 @@ import {
   updateQuestionValidator,
 } from '../validators/questionValidator.js';
 import addQuizId from '../middlewares/addQuizIdMiddleware.js';
-const router = Router();
+
+const router = Router({ mergeParams: true });
 
 const {
   getAllDocuments,
@@ -27,8 +28,8 @@ router
   .route('/')
   .post(
     restrictTo('teacher'),
-    addQuizId,
     addOwnerMiddleware,
+    addQuizId,
     validationMiddleware(createQuestionValidator),
     createDocument
   )
