@@ -57,28 +57,25 @@ export default class SubmissionController extends Factory<ISubmission> {
     }
   );
 
-  updateMyAnswer = catchAsync(
-    async (req: IRequest, res: Response, next: NextFunction) => {
-      // const submission = await Submission.findById(req.params.id);
-      const submission = await Submission.findOne({
-        _id: req.params.submissionId,
-      });
+  updateMyAnswer = catchAsync(async (req: IRequest, res: Response) => {
+    // const submission = await Submission.findById(req.params.id);
+    const submission = await Submission.findOne({
+      _id: req.params.submissionId,
+    });
 
-      const currentAnswer = submission?.answers.find(
-        el =>
-          (el._id as Types.ObjectId).toString() ==
-          (req.params.answerId as string)
-      );
+    const currentAnswer = submission?.answers.find(
+      el =>
+        (el._id as Types.ObjectId).toString() == (req.params.answerId as string)
+    );
 
-      Object(currentAnswer).selectedOptionIndex = req.body.selectedOptionIndex;
-      await submission?.save({ validateBeforeSave: false });
+    Object(currentAnswer).selectedOptionIndex = req.body.selectedOptionIndex;
+    await submission?.save({ validateBeforeSave: false });
 
-      res.status(200).json({
-        status: 'success',
-        data: {
-          submission,
-        },
-      });
-    }
-  );
+    res.status(200).json({
+      status: 'success',
+      data: {
+        submission,
+      },
+    });
+  });
 }
