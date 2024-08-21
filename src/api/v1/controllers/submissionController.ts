@@ -6,6 +6,7 @@ import { ISubmission } from '../interfaces/ISubmission.js';
 import Submission from '../models/Submission.js';
 import { NextFunction, Response } from 'express';
 import HttpError from '../../../utils/httpError.js';
+import { Types } from 'mongoose';
 
 export default class SubmissionController extends Factory<ISubmission> {
   constructor() {
@@ -53,6 +54,31 @@ export default class SubmissionController extends Factory<ISubmission> {
           );
         }
       }
+    }
+  );
+
+  updateMyAnswer = catchAsync(
+    async (req: IRequest, res: Response, next: NextFunction) => {
+      // const submission = await Submission.findById(req.params.id);
+      const submission = await Submission.findOne({
+        _id: req.params.submissionId,
+      });
+
+      const currentAnswer = submission?.answers.find(
+        el =>
+          (el._id as Types.ObjectId).toString() ==
+          (req.params.answerId as string)
+      );
+
+      Object(currentAnswer).selectedOptionIndex = req.body.selectedOptionIndex;
+      await submission?.save({ validateBeforeSave: false });
+
+      res.status(200).json({
+        status: 'success',
+        data: {
+          submission,
+        },
+      });
     }
   );
 }

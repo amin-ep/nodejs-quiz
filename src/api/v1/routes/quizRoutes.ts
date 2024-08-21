@@ -9,10 +9,12 @@ import {
   updateQuizValidator,
 } from '../validators/quizValidator.js';
 import questionRouter from './questionRoutes.js';
+import submissionRouter from './submissionRoutes.js';
 
 const router = Router();
 // Nested routes
 router.use('/:quizId/questions', questionRouter);
+router.use('/:quizId/submission', submissionRouter);
 
 const {
   getAllDocuments,

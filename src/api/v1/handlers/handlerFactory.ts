@@ -43,14 +43,6 @@ export default class Factory<T extends Document> {
 
   updateDocument = catchAsync(
     async (req: IRequest, res: Response, next: NextFunction) => {
-      //   try {
-      //     updateQuestionValidator.parse(req.body);
-      //   } catch (err) {
-      //     if (err instanceof ZodError) {
-      //       return next(new HttpError(err.errors[0].message, 400));
-      //     }
-      //   }
-
       const updatedDocument = await this.Model.findByIdAndUpdate(
         req.params.id,
         req.body,

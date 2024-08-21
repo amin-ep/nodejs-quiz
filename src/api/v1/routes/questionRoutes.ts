@@ -9,8 +9,10 @@ import {
   updateQuestionValidator,
 } from '../validators/questionValidator.js';
 import addQuizId from '../middlewares/addQuizIdMiddleware.js';
-
+// import submissionRouter from './submissionRoutes.js';
 const router = Router({ mergeParams: true });
+
+// router.use('/:questionId/submission', submissionRouter);
 
 const {
   getAllDocuments,

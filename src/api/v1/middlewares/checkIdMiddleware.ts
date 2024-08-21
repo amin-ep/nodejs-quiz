@@ -10,7 +10,7 @@ export default function checkID(
   val: string
 ) {
   if (!isValidObjectId(val)) {
-    return next(new HttpError(`Invalid Id: ${req.params.id}`, 404));
+    return next(new HttpError(`Invalid Id: ${val}`, 404));
   }
   next();
 }
