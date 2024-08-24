@@ -57,3 +57,30 @@ export const loginValidator = schema
     password: true,
   })
   .required();
+
+export const forgetPasswordValidator = z.object({
+  email: z
+    .string({
+      required_error: 'Please input your email',
+      invalid_type_error: 'Email value must be a string value',
+    })
+    .email({
+      message: 'Invalid email address. Please input a valid address',
+    }),
+});
+
+export const resetPasswordValidator = z.object({
+  password: z
+    .string({
+      required_error: 'Please input a password',
+      invalid_type_error: 'Password must be a string value',
+    })
+    .trim()
+    .min(8, {
+      message:
+        'Password is too short, please input a secure password(at least 8 characters)',
+    })
+    .max(14, {
+      message: 'Password cannot contain more than 14 characters',
+    }),
+});

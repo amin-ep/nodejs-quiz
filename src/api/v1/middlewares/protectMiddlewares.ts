@@ -35,6 +35,19 @@ class ProtectMiddlewares {
 
       // add: if user changed password recently
 
+      const userHasChangedPasswordRecently = user.checkPasswordChangedTime(
+        decoded.iat as number
+      );
+
+      if (userHasChangedPasswordRecently) {
+        return next(
+          new HttpError(
+            'The user has changed password recently. Please login again',
+            401
+          )
+        );
+      }
+
       req.user = user;
       next();
     }

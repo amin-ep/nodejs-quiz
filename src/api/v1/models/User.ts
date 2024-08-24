@@ -2,7 +2,7 @@ import mongoose, { Schema } from 'mongoose';
 import { IUser } from '../interfaces/IUser.js';
 import bcrypt from 'bcryptjs';
 import { v4 as uuid } from 'uuid';
-
+import moment from 'moment';
 const userSchema: Schema<IUser> = new Schema(
   {
     fullName: String,
@@ -25,6 +25,9 @@ const userSchema: Schema<IUser> = new Schema(
       default: true,
     },
     verificationCode: String,
+    passwordResetCode: String,
+    resetCodeExpiresAt: Date,
+    passwordChangedAt: Date,
   },
   {
     timestamps: true,
@@ -41,11 +44,6 @@ userSchema.pre('save', async function (next) {
   next();
 });
 
-// userSchema.pre('findOneAndUpdate', async function (next) {
-//   this.findOneAndUpdate({ _id: {$ne: } })
-//   next();
-// });
-
 userSchema.methods.generateVerificationCode = function () {
   this.verificationCode = uuid();
   return this.verificationCode;
@@ -54,6 +52,18 @@ userSchema.methods.generateVerificationCode = function () {
 userSchema.methods.verifyPassword = async function (password: string) {
   const result: boolean = await bcrypt.compare(password, this.password);
   return result;
+};
+
+userSchema.methods.generateResetCode = function () {
+  this.passwordResetCode = uuid();
+  this.resetCodeExpiresAt = moment(Date.now()).add(10, 'minutes');
+  return this.passwordResetCode;
+};
+
+userSchema.methods.checkPasswordChangedTime = function (
+  JWTGeneratedTime: number
+) {
+  return JWTGeneratedTime < this.passwordChangedAt.getTime() / 1000;
 };
 
 export default mongoose.model('User', userSchema);

@@ -8,6 +8,11 @@ export interface IUser extends Document {
   verified: boolean;
   active: boolean;
   verificationCode: string | undefined;
+  passwordResetCode: string | undefined;
+  resetCodeExpiresAt: Date | undefined;
+  passwordChangedAt: Date | undefined;
   generateVerificationCode: () => string;
   verifyPassword: (password: string) => boolean;
+  generateResetCode: () => string;
+  checkPasswordChangedTime: (time: number) => boolean;
 }
