@@ -3,6 +3,8 @@ import { Response, NextFunction } from 'express';
 import { IRequest } from '../interfaces/IRequest.js';
 import { Model as MongooseModel, Document } from 'mongoose';
 import HttpError from '../../../utils/httpError.js';
+import { IQuestion } from '../interfaces/IQuestion.js';
+import { IQuiz } from '../interfaces/IQuiz.js';
 
 export default class Factory<T extends Document> {
   constructor(protected Model: MongooseModel<T>) {}
@@ -43,6 +45,23 @@ export default class Factory<T extends Document> {
 
   updateDocument = catchAsync(
     async (req: IRequest, res: Response, next: NextFunction) => {
+      // check data is for current user
+      const currentDoc: IQuestion | IQuiz | null = await this.Model.findById(
+        req.params.id
+      );
+
+      if (currentDoc?.owner.toString() !== req.user?.id) {
+        if (req?.user?.role === 'admin') next();
+        else {
+          return next(
+            new HttpError(
+              'You do not have permission to perform this action',
+              403
+            )
+          );
+        }
+      }
+
       const updatedDocument = await this.Model.findByIdAndUpdate(
         req.params.id,
         req.body,
@@ -66,6 +85,23 @@ export default class Factory<T extends Document> {
 
   deleteDocument = catchAsync(
     async (req: IRequest, res: Response, next: NextFunction) => {
+      // check data is for current user
+      const currentDoc: IQuestion | IQuiz | null = await this.Model.findById(
+        req.params.id
+      );
+
+      if (currentDoc?.owner.toString() !== req.user?.id) {
+        if (req?.user?.role === 'admin') next();
+        else {
+          return next(
+            new HttpError(
+              'You do not have permission to perform this action',
+              403
+            )
+          );
+        }
+      }
+
       const document = await this.Model.findByIdAndDelete(req.params.id);
 
       if (!document) {

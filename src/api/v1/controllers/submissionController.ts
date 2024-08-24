@@ -57,25 +57,39 @@ export default class SubmissionController extends Factory<ISubmission> {
     }
   );
 
-  updateMyAnswer = catchAsync(async (req: IRequest, res: Response) => {
-    // const submission = await Submission.findById(req.params.id);
-    const submission = await Submission.findOne({
-      _id: req.params.submissionId,
-    });
+  updateMyAnswer = catchAsync(
+    async (req: IRequest, res: Response, next: NextFunction) => {
+      const submission = await Submission.findOne({
+        _id: req.params.submissionId,
+      });
 
-    const currentAnswer = submission?.answers.find(
-      el =>
-        (el._id as Types.ObjectId).toString() == (req.params.answerId as string)
-    );
+      if (
+        submission?.owner.toString() !== req?.user?.role &&
+        req?.user?.role !== 'admin'
+      ) {
+        return next(
+          new HttpError(
+            'You do not have permission to perform this action',
+            403
+          )
+        );
+      }
 
-    Object(currentAnswer).selectedOptionIndex = req.body.selectedOptionIndex;
-    await submission?.save({ validateBeforeSave: false });
+      const currentAnswer = submission?.answers.find(
+        el =>
+          (el._id as Types.ObjectId).toString() ==
+          (req.params.answerId as string)
+      );
 
-    res.status(200).json({
-      status: 'success',
-      data: {
-        submission,
-      },
-    });
-  });
+      Object(currentAnswer).selectedOptionIndex = req.body.selectedOptionIndex;
+      await submission?.save({ validateBeforeSave: false });
+
+      res.status(200).json({
+        status: 'success',
+        data: {
+          submission,
+        },
+      });
+    }
+  );
 }
