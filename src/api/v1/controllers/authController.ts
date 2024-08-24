@@ -162,7 +162,7 @@ export default class AuthController {
       // if user does not exists return 404
       if (
         !user ||
-        (await user.verifyPassword(req.body.password)) ||
+        !(await user.verifyPassword(req.body.password)) ||
         user.active === false
       ) {
         return next(new HttpError('Incorrect email or password', 404));
