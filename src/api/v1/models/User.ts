@@ -3,6 +3,7 @@ import { IUser } from '../interfaces/IUser.js';
 import bcrypt from 'bcryptjs';
 import { v4 as uuid } from 'uuid';
 import moment from 'moment';
+
 const userSchema: Schema<IUser> = new Schema(
   {
     fullName: String,
@@ -35,12 +36,10 @@ const userSchema: Schema<IUser> = new Schema(
 );
 
 userSchema.pre('save', async function (next) {
-  if (!this.isModified()) {
-    next();
+  if (this.isNew) {
+    this.password = await bcrypt.hash(this.password, 10);
   }
-  if (typeof this.password === 'string') {
-    return this.password === (await bcrypt.hash(this.password, 12));
-  }
+
   next();
 });
 
@@ -49,9 +48,8 @@ userSchema.methods.generateVerificationCode = function () {
   return this.verificationCode;
 };
 
-userSchema.methods.verifyPassword = async function (password: string) {
-  const result: boolean = await bcrypt.compare(password, this.password);
-  return result;
+userSchema.methods.verifyPassword = function (password: string) {
+  return bcrypt.compare(password, this.password);
 };
 
 userSchema.methods.generateResetCode = function () {

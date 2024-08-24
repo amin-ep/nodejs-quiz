@@ -160,12 +160,9 @@ export default class AuthController {
       );
 
       // if user does not exists return 404
-      if (
-        !user ||
-        !(await user.verifyPassword(req.body.password)) ||
-        user.active === false
-      ) {
-        return next(new HttpError('Incorrect email or password', 404));
+
+      if (!user || !(await user.verifyPassword(req.body.password))) {
+        return next(new HttpError('Incorrect email or password', 400));
       } else if (user && user.verified === false) {
         // if user exists and not verified send message to signup
         return next(
