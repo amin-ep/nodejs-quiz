@@ -33,8 +33,6 @@ class ProtectMiddlewares {
         return next(new HttpError('The user does not exists', 404));
       }
 
-      // add: if user changed password recently
-
       const userHasChangedPasswordRecently = user.checkPasswordChangedTime(
         decoded.iat as number
       );

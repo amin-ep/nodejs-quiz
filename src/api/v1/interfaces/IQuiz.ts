@@ -5,4 +5,6 @@ export interface IQuiz extends Document {
   description?: string | undefined;
   owner: Types.ObjectId;
   grade: number;
+  startTime: Date;
+  deprecationTime: Date;
 }

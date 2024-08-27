@@ -70,7 +70,7 @@ export default class AuthController {
     return token;
   }
 
-  signup = catchAsync(
+  public signup = catchAsync(
     async (req: Request, res: Response, next: NextFunction) => {
       // validate input data
       try {
@@ -119,7 +119,7 @@ export default class AuthController {
     }
   );
 
-  verifyEmail = catchAsync(
+  public verifyEmail = catchAsync(
     async (req: Request, res: Response, next: NextFunction) => {
       const user = await User.findOne({
         verificationCode: req.params.code,
@@ -145,7 +145,7 @@ export default class AuthController {
     }
   );
 
-  login = catchAsync(
+  public login = catchAsync(
     async (req: Request, res: Response, next: NextFunction) => {
       // validate input data
       try {
@@ -185,7 +185,7 @@ export default class AuthController {
     }
   );
 
-  forgetPassword = catchAsync(
+  public forgetPassword = catchAsync(
     async (req: Request, res: Response, next: NextFunction) => {
       // send email to input email
       const user = await User.findOne({ email: req.body.email });

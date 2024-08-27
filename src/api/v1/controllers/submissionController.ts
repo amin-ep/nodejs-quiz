@@ -34,7 +34,7 @@ export default class SubmissionController extends Factory<ISubmission> {
         const answerIndex = existingSubmission.answers.findIndex(
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           //@ts-ignore
-          el => el.question == newAnswer.question
+          el => el.question._id == newAnswer.question
         );
         if (answerIndex < 0) {
           existingSubmission.answers = [

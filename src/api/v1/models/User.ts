@@ -61,7 +61,9 @@ userSchema.methods.generateResetCode = function () {
 userSchema.methods.checkPasswordChangedTime = function (
   JWTGeneratedTime: number
 ) {
-  return JWTGeneratedTime < this.passwordChangedAt.getTime() / 1000;
+  if (this.passwordChangedAt) {
+    return JWTGeneratedTime < this.passwordChangedAt.getTime() / 1000;
+  }
 };
 
 export default mongoose.model('User', userSchema);

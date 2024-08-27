@@ -5,6 +5,7 @@ import { addOwnerMiddleware } from '../middlewares/addOwnerMiddleware.js';
 import validationMiddleware from '../middlewares/validationMiddleware.js';
 import { createSubmissionValidator } from '../validators/submissionValidator.js';
 import checkID from '../middlewares/checkIdMiddleware.js';
+import addQuizId from '../middlewares/addQuizIdMiddleware.js';
 
 const router = Router({ mergeParams: true });
 
@@ -21,6 +22,7 @@ router
   .post(
     restrictTo('student'),
     addOwnerMiddleware,
+    addQuizId,
     validationMiddleware(createSubmissionValidator),
     createSubmission
   );
