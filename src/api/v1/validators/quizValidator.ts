@@ -37,6 +37,8 @@ const schema = z
         message: 'You cannot set more than 100 grade for a quiz',
       })
       .int(),
+    startTime: z.string().datetime(),
+    deprecationTime: z.string().datetime(),
   })
   .strict();
 
@@ -45,6 +47,8 @@ export const createQuizValidator = schema.pick({
   description: true,
   owner: true,
   grade: true,
+  startTime: true,
+  deprecationTime: true,
 });
 
 export const updateQuizValidator = z.object({
