@@ -92,4 +92,25 @@ export default class SubmissionController extends Factory<ISubmission> {
       });
     }
   );
+
+  getStats = catchAsync(async (req: IRequest, res: Response) => {
+    const stats = await Submission.aggregate([
+      {
+        $group: {
+          _id: '$answers.correction',
+          // data: {
+          //   $push: '$$ROOT',
+          // },
+          sumPoints: { $sum: 1 },
+        },
+      },
+    ]);
+
+    res.status(200).json({
+      status: 'success',
+      data: {
+        stats,
+      },
+    });
+  });
 }

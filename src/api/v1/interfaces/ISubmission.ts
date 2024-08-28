@@ -11,6 +11,10 @@ export interface ISubmission extends Document {
   quiz: Types.ObjectId;
   answers: ICurrentAnswer[];
   owner: Types.ObjectId;
-  obtainedGrade: number;
+  sumPoints: number;
   graded: boolean;
 }
+
+// export interface ISubmissionModel extends Model<ISubmission> {
+//   calcSumPoint(): Promise<void>;
+// }

@@ -1,5 +1,9 @@
-import mongoose, { Schema, Query } from 'mongoose';
-import { ISubmission, ICurrentAnswer } from '../interfaces/ISubmission.js';
+import mongoose, { Schema, Query, Model } from 'mongoose';
+import {
+  ISubmission,
+  ICurrentAnswer,
+  // ISubmissionModel,
+} from '../interfaces/ISubmission.js';
 import Question from './Question.js';
 
 const submissionSchema = new Schema<ISubmission>(
@@ -22,11 +26,8 @@ const submissionSchema = new Schema<ISubmission>(
         correction: Boolean,
       },
     ],
-    obtainedGrade: Number,
-    graded: {
-      type: Boolean,
-      default: false,
-    },
+    sumPoints: Number,
+    graded: Boolean,
   },
   {
     timestamps: true,
@@ -56,10 +57,8 @@ submissionSchema.pre('save', async function (next) {
   const currentAnswerArr: ICurrentAnswer[] = this.answers;
   const currentAnswer: ICurrentAnswer =
     currentAnswerArr[this.answers.length - 1];
-  console.log(currentAnswer);
 
   const selectedOptionIndex: number = currentAnswer?.selectedOptionIndex;
-  console.log(selectedOptionIndex);
 
   const questionId: object = currentAnswer?.question;
   const question = await Question.findById(questionId);
@@ -68,6 +67,98 @@ submissionSchema.pre('save', async function (next) {
     currentAnswer.correction = true;
   } else {
     currentAnswer.correction = false;
+  }
+
+  next();
+});
+
+submissionSchema.statics.calcSumPoint = async function () {
+  const model = this as unknown as ISubmission;
+  const stats = await this.aggregate([
+    {
+      $match: { _id: model._id },
+    },
+    { $unwind: '$answers' },
+    {
+      $lookup: {
+        from: 'questions',
+        localField: 'answers.question',
+        as: 'questionDetails',
+        foreignField: '_id',
+      },
+    },
+  ]);
+
+  console.log(stats);
+};
+
+submissionSchema.pre('save', async function (this: ISubmission, next) {
+  const submission = this as unknown as ISubmission;
+  const model = this.constructor as Model<ISubmission>;
+  const calcSumPoint: { _id: null; sumPoints: number }[] =
+    await model.aggregate([
+      {
+        $match: { _id: submission._id },
+      },
+      { $unwind: '$answers' },
+      {
+        $lookup: {
+          from: 'questions',
+          localField: 'answers.question',
+          as: 'questionDetails',
+          foreignField: '_id',
+        },
+      },
+      {
+        $unwind: '$questionDetails',
+      },
+      {
+        $match: { 'answers.correction': true },
+      },
+      {
+        $group: {
+          _id: null,
+          sumPoints: { $sum: '$questionDetails.point' },
+        },
+      },
+    ]);
+
+  this.sumPoints = calcSumPoint[0].sumPoints;
+  next();
+});
+
+submissionSchema.pre('save', async function (this: ISubmission, next) {
+  const submission = this as unknown as ISubmission;
+  const model = this.constructor as Model<ISubmission>;
+
+  const unwindQuiz = await model.aggregate([
+    {
+      $match: { _id: submission._id },
+    },
+    {
+      $lookup: {
+        from: 'quizzes',
+        foreignField: '_id',
+        localField: 'quiz',
+        as: 'quizDetails',
+      },
+    },
+    {
+      $unwind: '$quizDetails',
+    },
+    {
+      $project: { _id: '$quizDetails' },
+    },
+  ]);
+
+  const quizGrade: number = unwindQuiz[0]._id.grade;
+
+  const minPointToGrade: number = quizGrade / 2;
+
+  if (this.sumPoints >= minPointToGrade) {
+    this.graded = true;
+  } else {
+    this.graded = false;
   }
 
   next();

@@ -6,4 +6,5 @@ export interface IQuestion extends Document {
   quiz: Types.ObjectId;
   owner: Types.ObjectId;
   point: Types.ObjectId;
+  calcSumPoint: () => void;
 }

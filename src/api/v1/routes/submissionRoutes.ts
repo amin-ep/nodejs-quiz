@@ -9,10 +9,16 @@ import addQuizId from '../middlewares/addQuizIdMiddleware.js';
 
 const router = Router({ mergeParams: true });
 
-const { getAllDocuments, createSubmission, updateMyAnswer, getDocumentById } =
-  new SubmissionController();
+const {
+  getAllDocuments,
+  createSubmission,
+  updateMyAnswer,
+  getDocumentById,
+  getStats,
+} = new SubmissionController();
 const { protect, restrictTo } = new ProtectMiddlewares();
 
+router.get('/stats', getStats);
 router.param('id', checkID);
 
 router.use(protect);

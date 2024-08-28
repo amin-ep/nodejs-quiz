@@ -33,6 +33,10 @@ const handleCastError = (err: HttpError) => {
   return new HttpError(message, 404);
 };
 
+const handleTokenExpiredError = () => {
+  return new HttpError('The token has been expired. Please login again!', 401);
+};
+
 export default function (
   err: HttpError,
   _req: Request,
@@ -46,6 +50,7 @@ export default function (
     developmentError(err, res);
   } else {
     if (err.name === 'CastError') err = handleCastError(err);
+    if (err.name === 'TokenExpiredError') err = handleTokenExpiredError();
     productionError(err, res);
   }
 }
