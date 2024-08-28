@@ -72,26 +72,6 @@ submissionSchema.pre('save', async function (next) {
   next();
 });
 
-submissionSchema.statics.calcSumPoint = async function () {
-  const model = this as unknown as ISubmission;
-  const stats = await this.aggregate([
-    {
-      $match: { _id: model._id },
-    },
-    { $unwind: '$answers' },
-    {
-      $lookup: {
-        from: 'questions',
-        localField: 'answers.question',
-        as: 'questionDetails',
-        foreignField: '_id',
-      },
-    },
-  ]);
-
-  console.log(stats);
-};
-
 submissionSchema.pre('save', async function (this: ISubmission, next) {
   const submission = this as unknown as ISubmission;
   const model = this.constructor as Model<ISubmission>;
