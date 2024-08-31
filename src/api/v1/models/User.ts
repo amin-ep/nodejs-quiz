@@ -35,6 +35,8 @@ const userSchema: Schema<IUser> = new Schema(
   }
 );
 
+userSchema.index({ role: -1 });
+
 userSchema.pre('save', async function (next) {
   if (this.isNew) {
     this.password = await bcrypt.hash(this.password, 10);

@@ -5,12 +5,20 @@ import { Model as MongooseModel, Document } from 'mongoose';
 import HttpError from '../../../utils/httpError.js';
 import { IQuestion } from '../interfaces/IQuestion.js';
 import { IQuiz } from '../interfaces/IQuiz.js';
+import ApiFeatures from '../../../utils/apiFeatures.js';
 
 export default class Factory<T extends Document> {
   constructor(protected Model: MongooseModel<T>) {}
 
   getAllDocuments = catchAsync(async (req: IRequest, res: Response) => {
-    const docs = await this.Model.find();
+    // @ts-ignore
+    const features = new ApiFeatures(this.Model.find(), req.query)
+      .filter()
+      .limitFields()
+      .paginate()
+      .sort();
+
+    const docs = await features.query;
 
     res.status(200).json({
       status: 'success',
