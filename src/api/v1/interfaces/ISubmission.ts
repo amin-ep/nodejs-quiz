@@ -14,7 +14,3 @@ export interface ISubmission extends Document {
   sumPoints: number;
   graded: boolean;
 }
-
-// export interface ISubmissionModel extends Model<ISubmission> {
-//   calcSumPoint(): Promise<void>;
-// }

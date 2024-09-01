@@ -5,6 +5,8 @@ import {
   // ISubmissionModel,
 } from '../interfaces/ISubmission.js';
 import Question from './Question.js';
+import Quiz from './Quiz.js';
+import HttpError from '../../../utils/httpError.js';
 
 const submissionSchema = new Schema<ISubmission>(
   {
@@ -103,7 +105,11 @@ submissionSchema.pre('save', async function (this: ISubmission, next) {
       },
     ]);
 
-  this.sumPoints = calcSumPoint[0].sumPoints;
+  if (calcSumPoint.at(0)) {
+    this.sumPoints = calcSumPoint[0].sumPoints;
+  }
+  // fix this
+
   next();
 });
 
@@ -131,14 +137,34 @@ submissionSchema.pre('save', async function (this: ISubmission, next) {
     },
   ]);
 
-  const quizGrade: number = unwindQuiz[0]._id.grade;
+  if (unwindQuiz.at(0)) {
+    const quizGrade: number = unwindQuiz[0]._id.grade;
+    const minPointToGrade: number = quizGrade / 2;
 
-  const minPointToGrade: number = quizGrade / 2;
+    if (this.sumPoints >= minPointToGrade) {
+      this.graded = true;
+    } else {
+      this.graded = false;
+    }
+  }
 
-  if (this.sumPoints >= minPointToGrade) {
-    this.graded = true;
-  } else {
-    this.graded = false;
+  // fix this
+
+  next();
+});
+
+submissionSchema.pre('save', async function (this: ISubmission, next) {
+  const quiz = await Quiz.findOne({ _id: this.quiz });
+  const deprecationTime = quiz?.deprecationTime;
+  const startTime = quiz?.startTime;
+  const currentTime = Date.now();
+
+  if ((startTime?.getTime() as number) > currentTime) {
+    return next(
+      new HttpError('The quiz is not started yet. Please comeback later!', 403)
+    );
+  } else if ((deprecationTime?.getTime() as number) < currentTime) {
+    return next(new HttpError('The quiz time is up!', 403));
   }
 
   next();
