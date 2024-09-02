@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { ZodError, ZodTypeAny } from 'zod';
-import HttpError from '../../../utils/httpError.js';
+import { BadRequest } from '../../../utils/httpError.js';
 
 export default function validationMiddleware(validator: ZodTypeAny) {
   return (req: Request, res: Response, next: NextFunction) => {
@@ -9,7 +9,7 @@ export default function validationMiddleware(validator: ZodTypeAny) {
       next();
     } catch (err) {
       if (err instanceof ZodError) {
-        return next(new HttpError(err.errors[0].message, 400));
+        return next(new BadRequest(err.errors[0].message));
       }
     }
   };

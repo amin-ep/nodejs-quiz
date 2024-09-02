@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { Response, NextFunction } from 'express';
-import HttpError from '../../../utils/httpError.js';
+import { Forbidden, NotFound, Unauthorized } from '../../../utils/httpError.js';
 import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
 import catchAsync from '../../../utils/catchAsync.js';
@@ -20,7 +20,7 @@ class ProtectMiddlewares {
 
       if (!token) {
         return next(
-          new HttpError('You are not logged in. Please login first', 401)
+          new Unauthorized('You are not logged in. Please login first')
         );
       }
 
@@ -30,7 +30,7 @@ class ProtectMiddlewares {
       const user = await User.findById(decoded.id);
 
       if (!user) {
-        return next(new HttpError('The user does not exists', 404));
+        return next(new NotFound('The user does not exists'));
       }
 
       const userHasChangedPasswordRecently = user.checkPasswordChangedTime(
@@ -39,9 +39,8 @@ class ProtectMiddlewares {
 
       if (userHasChangedPasswordRecently) {
         return next(
-          new HttpError(
-            'The user has changed password recently. Please login again',
-            401
+          new Unauthorized(
+            'The user has changed password recently. Please login again'
           )
         );
       }
@@ -55,7 +54,7 @@ class ProtectMiddlewares {
     return (req: IRequest, _res: Response, next: NextFunction) => {
       if (req.user && !roles.includes(req.user.role)) {
         return next(
-          new HttpError('Yo do not have permission to perform this action', 403)
+          new Forbidden('Yo do not have permission to perform this action')
         );
       }
       next();
@@ -64,7 +63,7 @@ class ProtectMiddlewares {
 
   public protectCurrentUser(req: IRequest, res: Response, next: NextFunction) {
     if (req?.user?.id === req.params.id) {
-      return next(new HttpError('You cannot delete your account', 403));
+      return next(new Forbidden('You cannot delete your account'));
     }
     next();
   }

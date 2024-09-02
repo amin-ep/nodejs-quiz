@@ -5,7 +5,7 @@ import { ISubmission } from '../interfaces/ISubmission.js';
 
 import Submission from '../models/Submission.js';
 import { NextFunction, Response } from 'express';
-import HttpError from '../../../utils/httpError.js';
+import { Forbidden } from '../../../utils/httpError.js';
 import { Types } from 'mongoose';
 
 export default class SubmissionController extends Factory<ISubmission> {
@@ -49,9 +49,7 @@ export default class SubmissionController extends Factory<ISubmission> {
             },
           });
         } else {
-          return next(
-            new HttpError('You have answered this question before', 403)
-          );
+          return next(new Forbidden('You have answered this question before'));
         }
       }
     }
@@ -68,10 +66,7 @@ export default class SubmissionController extends Factory<ISubmission> {
         req?.user?.role !== 'admin'
       ) {
         return next(
-          new HttpError(
-            'You do not have permission to perform this action',
-            403
-          )
+          new Forbidden('You do not have permission to perform this action')
         );
       }
 
@@ -92,25 +87,4 @@ export default class SubmissionController extends Factory<ISubmission> {
       });
     }
   );
-
-  getStats = catchAsync(async (req: IRequest, res: Response) => {
-    const stats = await Submission.aggregate([
-      {
-        $group: {
-          _id: '$answers.correction',
-          // data: {
-          //   $push: '$$ROOT',
-          // },
-          sumPoints: { $sum: 1 },
-        },
-      },
-    ]);
-
-    res.status(200).json({
-      status: 'success',
-      data: {
-        stats,
-      },
-    });
-  });
 }

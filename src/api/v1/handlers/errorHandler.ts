@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { Request, Response, NextFunction } from 'express';
-import HttpError from '../../../utils/httpError.js';
+import HttpError, { NotFound, Unauthorized } from '../../../utils/httpError.js';
 
 const developmentError = (err: HttpError, res: Response) => {
   res.status(err.statusCode).json({
@@ -30,11 +30,15 @@ const productionError = (err: HttpError, res: Response) => {
 const handleCastError = (err: HttpError) => {
   //@ts-ignore
   const message = `Invalid Id: ${err.value}`;
-  return new HttpError(message, 404);
+  return new NotFound(message);
 };
 
 const handleTokenExpiredError = () => {
-  return new HttpError('The token has been expired. Please login again!', 401);
+  return new Unauthorized('The token has been expired. Please login again!');
+};
+
+const handleJWTError = () => {
+  return new Unauthorized('Invalid token. Please Login again!');
 };
 
 export default function (
@@ -51,6 +55,7 @@ export default function (
   } else {
     if (err.name === 'CastError') err = handleCastError(err);
     if (err.name === 'TokenExpiredError') err = handleTokenExpiredError();
+    if (err.name === 'JsonWebTokenError') err = handleJWTError();
     productionError(err, res);
   }
 }

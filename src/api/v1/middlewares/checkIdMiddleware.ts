@@ -1,7 +1,7 @@
 import { NextFunction, Response } from 'express';
 import { IRequest } from '../interfaces/IRequest.js';
 import { isValidObjectId } from 'mongoose';
-import HttpError from '../../../utils/httpError.js';
+import { NotFound } from '../../../utils/httpError.js';
 
 export default function checkID(
   req: IRequest,
@@ -10,7 +10,7 @@ export default function checkID(
   val: string
 ) {
   if (!isValidObjectId(val)) {
-    return next(new HttpError(`Invalid Id: ${val}`, 404));
+    return next(new NotFound(`Invalid Id: ${val}`));
   }
   next();
 }

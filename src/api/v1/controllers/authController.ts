@@ -6,7 +6,11 @@ import {
   signupValidator,
 } from '../validators/authValidator.js';
 import z from 'zod';
-import HttpError from '../../../utils/httpError.js';
+import {
+  BadRequest,
+  NotFound,
+  Unauthorized,
+} from '../../../utils/httpError.js';
 import emailSender from '../helpers/emailSender.js';
 import jwt from 'jsonwebtoken';
 import { IRequest } from '../interfaces/IRequest.js';
@@ -78,7 +82,7 @@ export default class AuthController {
       } catch (err) {
         if (err instanceof z.ZodError) {
           console.log(err);
-          return next(new HttpError(err.errors[0].message, 400));
+          return next(new BadRequest(err.errors[0].message));
         }
       }
 
@@ -110,9 +114,8 @@ export default class AuthController {
       ) {
         return next(
           // exists and is active and verified send error
-          new HttpError(
-            'There is a user with this account. Please try to login!',
-            401
+          new Unauthorized(
+            'There is a user with this account. Please try to login!'
           )
         );
       }
@@ -126,7 +129,7 @@ export default class AuthController {
       }).select('+email');
 
       if (!user) {
-        return next(new HttpError('Invalid Verification code', 404));
+        return next(new NotFound('Invalid Verification code'));
       }
 
       user.verified = true;
@@ -152,7 +155,7 @@ export default class AuthController {
         await loginValidator.parse(req.body);
       } catch (err) {
         if (err instanceof z.ZodError) {
-          return next(new HttpError(err.errors[0].message, 400));
+          return next(new BadRequest(err.errors[0].message));
         }
       }
       const user = await User.findOne({ email: req.body.email }).select(
@@ -162,13 +165,12 @@ export default class AuthController {
       // if user does not exists return 404
 
       if (!user || !(await user.verifyPassword(req.body.password))) {
-        return next(new HttpError('Incorrect email or password', 400));
+        return next(new BadRequest('Incorrect email or password'));
       } else if (user && user.verified === false) {
         // if user exists and not verified send message to signup
         return next(
-          new HttpError(
-            'This account is not verified yet. Please signup and verify your account',
-            401
+          new Unauthorized(
+            'This account is not verified yet. Please signup and verify your account'
           )
         );
       } else {
@@ -191,7 +193,7 @@ export default class AuthController {
       const user = await User.findOne({ email: req.body.email });
 
       if (!user) {
-        return next(new HttpError('There is no account with this email', 404));
+        return next(new NotFound('There is no account with this email'));
       }
 
       const code = user.generateResetCode();
@@ -218,7 +220,7 @@ export default class AuthController {
       });
       // send error if user does not exists or code is expired
       if (!user) {
-        return next(new HttpError('invalid or expired code', 404));
+        return next(new NotFound('invalid or expired code'));
       }
 
       // update data

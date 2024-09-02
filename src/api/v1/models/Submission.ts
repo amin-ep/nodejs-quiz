@@ -6,7 +6,7 @@ import {
 } from '../interfaces/ISubmission.js';
 import Question from './Question.js';
 import Quiz from './Quiz.js';
-import HttpError from '../../../utils/httpError.js';
+import { Forbidden } from '../../../utils/httpError.js';
 
 const submissionSchema = new Schema<ISubmission>(
   {
@@ -161,10 +161,10 @@ submissionSchema.pre('save', async function (this: ISubmission, next) {
 
   if ((startTime?.getTime() as number) > currentTime) {
     return next(
-      new HttpError('The quiz is not started yet. Please comeback later!', 403)
+      new Forbidden('The quiz is not started yet. Please comeback later!')
     );
   } else if ((deprecationTime?.getTime() as number) < currentTime) {
-    return next(new HttpError('The quiz time is up!', 403));
+    return next(new Forbidden('The quiz time is up!'));
   }
 
   next();

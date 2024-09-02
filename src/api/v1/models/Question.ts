@@ -2,7 +2,7 @@ import mongoose, { Schema, Types } from 'mongoose';
 import { IQuestion } from '../interfaces/IQuestion.js';
 import Quiz from './Quiz.js';
 import { IQuiz } from '../interfaces/IQuiz.js';
-import HttpError from '../../../utils/httpError.js';
+import { Forbidden } from '../../../utils/httpError.js';
 
 const questionSchema = new Schema<IQuestion>(
   {
@@ -50,9 +50,8 @@ questionSchema.pre('save', async function (this: IQuestion, next) {
 
     if (this.point + sumQuestionPoints > quiz.grade) {
       return next(
-        new HttpError(
-          'The points of questions are getting grater than quiz grade. Please edit some questions or do not more!',
-          403
+        new Forbidden(
+          'The points of questions are getting grater than quiz grade. Please edit some questions or do not more!'
         )
       );
     }

@@ -2,7 +2,7 @@ import catchAsync from '../../../utils/catchAsync.js';
 import { Response, NextFunction } from 'express';
 import { IRequest } from '../interfaces/IRequest.js';
 import { Model as MongooseModel, Document } from 'mongoose';
-import HttpError from '../../../utils/httpError.js';
+import { Forbidden, NotFound } from '../../../utils/httpError.js';
 import { IQuestion } from '../interfaces/IQuestion.js';
 import { IQuiz } from '../interfaces/IQuiz.js';
 import ApiFeatures from '../../../utils/apiFeatures.js';
@@ -62,10 +62,7 @@ export default class Factory<T extends Document> {
         if (req?.user?.role === 'admin') next();
         else {
           return next(
-            new HttpError(
-              'You do not have permission to perform this action',
-              403
-            )
+            new Forbidden('You do not have permission to perform this action')
           );
         }
       }
@@ -79,7 +76,7 @@ export default class Factory<T extends Document> {
       );
 
       if (!updatedDocument) {
-        return next(new HttpError(`Invalid Id: ${req.params.id}`, 404));
+        return next(new NotFound(`Invalid Id: ${req.params.id}`));
       }
 
       res.status(200).json({
@@ -102,10 +99,7 @@ export default class Factory<T extends Document> {
         if (req?.user?.role === 'admin') next();
         else {
           return next(
-            new HttpError(
-              'You do not have permission to perform this action',
-              403
-            )
+            new Forbidden('You do not have permission to perform this action')
           );
         }
       }
@@ -113,7 +107,7 @@ export default class Factory<T extends Document> {
       const document = await this.Model.findByIdAndDelete(req.params.id);
 
       if (!document) {
-        return next(new HttpError(`Invalid Id: ${req.params.id}`, 404));
+        return next(new NotFound(`Invalid Id: ${req.params.id}`));
       }
 
       res.status(204).json({
