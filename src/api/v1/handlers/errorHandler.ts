@@ -22,7 +22,6 @@ const productionError = (err: HttpError, res: Response) => {
     res.status(500).json({
       status: 'error',
       message: 'something went wrong from server!',
-      err,
     });
   }
 };
@@ -41,6 +40,10 @@ const handleJWTError = () => {
   return new Unauthorized('Invalid token. Please Login again!');
 };
 
+const handleLargePayloadError = (err: HttpError) => {
+  return new HttpError(err.message, 413);
+};
+
 export default function (
   err: HttpError,
   _req: Request,
@@ -56,6 +59,7 @@ export default function (
     if (err.name === 'CastError') err = handleCastError(err);
     if (err.name === 'TokenExpiredError') err = handleTokenExpiredError();
     if (err.name === 'JsonWebTokenError') err = handleJWTError();
+    if (err.statusCode === 413) err = handleLargePayloadError(err);
     productionError(err, res);
   }
 }

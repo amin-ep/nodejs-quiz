@@ -162,6 +162,8 @@ export default class AuthController {
         '+password'
       );
 
+      console.log(req.body);
+
       // if user does not exists return 404
 
       if (!user || !(await user.verifyPassword(req.body.password))) {

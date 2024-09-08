@@ -13,7 +13,9 @@ const schema = z
       message: 'Invalid email address. Please input a valid address',
     }),
     password: z
-      .string()
+      .string({
+        required_error: '"password" is required',
+      })
       .trim()
       .min(8, {
         message:

@@ -22,14 +22,13 @@ const {
   createDocument,
   updateDocument,
   deleteDocument,
-  getMyQuizzes,
 } = new QuizController();
 
 const { protect, restrictTo } = new ProtectMiddlewares();
 
 router.use(protect);
-router.get('/myQuizzes', restrictTo('teacher'), getMyQuizzes);
 router.param('id', checkID);
+
 router
   .route('/')
   .get(getAllDocuments)
