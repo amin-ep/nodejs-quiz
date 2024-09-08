@@ -8,11 +8,14 @@ import questionRouterV1 from './api/v1/routes/questionRoutes.js';
 import userRouterV1 from './api/v1/routes/userRoutes.js';
 import submissionRouterV1 from './api/v1/routes/submissionRoutes.js';
 import rateLimit from 'express-rate-limit';
+import winston from 'winston';
 
 const app: Express = express();
 
 app.use(express.json({ limit: '1kb' }));
 
+// middlewares
+// limiter
 const limiter = rateLimit({
   windowMs: 1 * 60 * 1000,
   limit: 30,
@@ -22,9 +25,20 @@ const limiter = rateLimit({
   legacyHeaders: true,
 });
 
-// middlewares
-
 app.use(limiter);
+
+// logger
+const logger = winston.createLogger({
+  level: 'info',
+  format: winston.format.json(),
+  defaultMeta: { service: 'user-service' },
+  transports: [new winston.transports.Console()],
+});
+
+logger.log({
+  level: 'info',
+  message: '',
+});
 
 // Routes
 
