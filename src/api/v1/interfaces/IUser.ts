@@ -7,6 +7,7 @@ export interface IUser extends Document {
   role: string;
   verified: boolean;
   active: boolean;
+  ip: string;
   verificationCode: string | undefined;
   passwordResetCode: string | undefined;
   resetCodeExpiresAt: Date | undefined;

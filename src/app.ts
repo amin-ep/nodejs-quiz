@@ -8,7 +8,6 @@ import questionRouterV1 from './api/v1/routes/questionRoutes.js';
 import userRouterV1 from './api/v1/routes/userRoutes.js';
 import submissionRouterV1 from './api/v1/routes/submissionRoutes.js';
 import rateLimit from 'express-rate-limit';
-import winston from 'winston';
 
 const app: Express = express();
 
@@ -28,21 +27,10 @@ const limiter = rateLimit({
 app.use(limiter);
 
 // logger
-const logger = winston.createLogger({
-  level: 'info',
-  format: winston.format.json(),
-  defaultMeta: { service: 'user-service' },
-  transports: [new winston.transports.Console()],
-});
-
-logger.log({
-  level: 'info',
-  message: '',
-});
 
 // Routes
-
 // V1
+
 app.use('/api/v1/auth', authRouterV1);
 app.use('/api/v1/quiz', quizRouterV1);
 app.use('/api/v1/question', questionRouterV1);

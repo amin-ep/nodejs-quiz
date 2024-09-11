@@ -25,6 +25,7 @@ const userSchema: Schema<IUser> = new Schema(
       type: Boolean,
       default: true,
     },
+    ip: String,
     verificationCode: String,
     passwordResetCode: String,
     resetCodeExpiresAt: Date,

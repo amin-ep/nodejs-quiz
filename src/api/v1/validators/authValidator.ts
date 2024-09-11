@@ -9,9 +9,13 @@ const schema = z
       })
       .min(5, { message: 'fullName must contain at least 5 characters' })
       .max(20, { message: 'fullName cannot contain more than 20 characters' }),
-    email: z.string().email({
-      message: 'Invalid email address. Please input a valid address',
-    }),
+    email: z
+      .string({
+        required_error: '"email" is required',
+      })
+      .email({
+        message: 'Invalid email address. Please input a valid address',
+      }),
     password: z
       .string({
         required_error: '"password" is required',

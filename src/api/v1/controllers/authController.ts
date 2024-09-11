@@ -81,10 +81,10 @@ export default class AuthController {
         await signupValidator.parseAsync(req.body);
       } catch (err) {
         if (err instanceof z.ZodError) {
-          console.log(err);
           return next(new BadRequest(err.errors[0].message));
         }
       }
+      console.log(req.ips);
 
       // if user exists:
       const existingUser = await User.findOne({ email: req.body.email });

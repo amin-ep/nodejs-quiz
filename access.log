@@ -1,0 +1,9 @@
+2024-09-11 09:37:18.642 AM [31merror[39m: 	[31m400 Required[39m
+2024-09-11 09:38:48.200 AM [31merror[39m: 	[31m400 "email" is required[39m
+2024-09-11 09:41:32.719 AM [31merror[39m: 	[31m400 "email" is required[39m
+2024-09-11 09:42:37.987 AM [31merror[39m: 	[31m400 "email" is required. IP: ::ffff:127.0.0.1[39m
+2024-09-11 10:13:43.838 AM [31merror[39m: 	[31m400 fullName is required. IP: ::ffff:127.0.0.1[39m
+2024-09-11 10:14:16.114 AM [31merror[39m: 	[31m400 fullName is required. IP: ::ffff:127.0.0.1[39m
+2024-09-11 10:15:07.345 AM [31merror[39m: 	[31m400 Expected ',' or '}' after property value in JSON at position 27. IP: ::ffff:127.0.0.1[39m
+2024-09-11 10:15:12.311 AM [31merror[39m: 	[31m401 There is a user with this account. Please try to login!. IP: ::ffff:127.0.0.1[39m
+2024-09-11 10:15:36.706 AM [31merror[39m: 	[31m401 There is a user with this account. Please try to login!. IP: ::ffff:127.0.0.1[39m

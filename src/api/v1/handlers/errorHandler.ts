@@ -2,6 +2,8 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { Request, Response, NextFunction } from 'express';
 import HttpError, { NotFound, Unauthorized } from '../../../utils/httpError.js';
+import logger from '../../../utils/logger.js';
+import { IRequest } from '../interfaces/IRequest.js';
 
 const developmentError = (err: HttpError, res: Response) => {
   res.status(err.statusCode).json({
@@ -46,7 +48,7 @@ const handleLargePayloadError = (err: HttpError) => {
 
 export default function (
   err: HttpError,
-  _req: Request,
+  req: IRequest,
   res: Response,
   _next: NextFunction
 ) {
@@ -62,4 +64,8 @@ export default function (
     if (err.statusCode === 413) err = handleLargePayloadError(err);
     productionError(err, res);
   }
+
+  const loggerMessage = `${err.statusCode} ${err.message}. IP: ${req.ip}`;
+
+  logger.log('error', loggerMessage);
 }
