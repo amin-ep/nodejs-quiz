@@ -84,7 +84,7 @@ export default class AuthController {
           return next(new BadRequest(err.errors[0].message));
         }
       }
-      console.log(req.ips);
+      if (!req.body.ip) req.body.ip = req.ip;
 
       // if user exists:
       const existingUser = await User.findOne({ email: req.body.email });
@@ -119,6 +119,7 @@ export default class AuthController {
           )
         );
       }
+      console.log(req.body);
     }
   );
 
